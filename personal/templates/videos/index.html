@@ -1,7 +1,22 @@
 {% extends 'base.html' %}
 
 {% block title %}
+Видео
 {% endblock %}
 
 {% block content %}
+{% for category, video_items in videos.items %}
+<section class="section">
+  <h1 class="title">{{ category }}</h1>
+    {% for item in video_items %}
+    <div class="block">
+        <a href="{{ item.link }}" target="_blank">{{ item.title }}</a> [{{ item.language }}] {{ item.difficult }}
+        <p>{{ item.description }}</p>
+        <p><a href="{{ item.author_github_link }}" target="_blank">GH</a></p>
+        <p><a href="{{ item.my_github_link }}" target="_blank">GH</a></p>
+
+    </div>
+    {% endfor %}
+</section>
+{% endfor %}
 {% endblock %}

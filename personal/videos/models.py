@@ -26,7 +26,7 @@ class Video(models.Model):
     my_github_link = models.URLField('Ссылка на мой проект в GitHub', null=True, blank=True, unique=True)
 
     def __str__(self):
-        return '{}. {}'.format(self.categories_list, self.title)
+        return '{}. {}'.format(self.categories_str, self.title)
 
     class Meta:
         ordering = ('title', )
@@ -34,5 +34,5 @@ class Video(models.Model):
         verbose_name_plural = 'Видео'
 
     @property
-    def categories_list(self):
+    def categories_str(self):
         return ', '.join([category.title for category in self.categories.all()])
