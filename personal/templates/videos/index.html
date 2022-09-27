@@ -10,10 +10,29 @@
   <h1 class="title">{{ category }}</h1>
     {% for item in video_items %}
     <div class="block">
+        {% if item.link_status %}
+        <i class="fas fa-link" style="color:green"></i>
         <a href="{{ item.link }}" target="_blank">{{ item.title }}</a> [{{ item.language }}] {{ item.difficult }}
-        <p>{{ item.description }}</p>
-        <p><a href="{{ item.author_github_link }}" target="_blank">GH</a></p>
-        <p><a href="{{ item.my_github_link }}" target="_blank">GH</a></p>
+        {% else %}
+        <i class="fas fa-link" style="color:red"></i>
+        {{ item.title }} [{{ item.language }}] {{ item.difficult }}
+        {% endif %}
+
+        {% if item.author_github_link %}
+            {% if item.author_github_link.1 %}
+            <a href="{{ item.author_github_link.0 }}" target="_blank" title="Проект на GitHub автора"><i class="fa fa-github"></i></a>
+            {% else %}
+            <i class="fa fa-github" style="color:red"></i>
+            {% endif %}
+        {% endif %}
+        {% if item.my_github_link %}
+            {% if item.my_github_link.1 %}
+            <a href="{{ item.my_github_link.0 }}" target="_blank" title="Проект на моём GitHub"><i class="fa fa-github-alt"></i></a>
+            {% else %}
+            <i class="fa fa-github-alt" style="color:red"></i>
+            {% endif %}
+        {% endif %}
+
 
     </div>
     {% endfor %}
