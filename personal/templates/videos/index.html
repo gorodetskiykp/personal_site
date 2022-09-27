@@ -8,34 +8,54 @@
 {% for category, video_items in videos.items %}
 <section class="section">
   <h1 class="title">{{ category }}</h1>
+    {% with name=forloop.counter0 %}
     {% for item in video_items %}
     <div class="block">
         {% if item.link_status %}
-        <i class="fas fa-link" style="color:green"></i>
-        <a href="{{ item.link }}" target="_blank">{{ item.title }}</a> [{{ item.language }}] {{ item.difficult }}
+        <i class="fas fa-link" id="{{ name }}{{ forloop.counter0}}0"></i>
+        <a href="{{ item.link }}" target="_blank" class="resourcelink" rel="{{ name }}{{ forloop.counter0}}0">{{ item.title }}</a> [{{ item.language }}] {{ item.difficult }}
         {% else %}
         <i class="fas fa-link" style="color:red"></i>
         {{ item.title }} [{{ item.language }}] {{ item.difficult }}
         {% endif %}
 
         {% if item.author_github_link %}
-            {% if item.author_github_link.1 %}
-            <a href="{{ item.author_github_link.0 }}" target="_blank" title="Проект на GitHub автора"><i class="fa fa-github"></i></a>
-            {% else %}
-            <i class="fa fa-github" style="color:red"></i>
-            {% endif %}
+            <a href="{{ item.author_github_link }}" target="_blank" title="Проект на GitHub автора" rel="{{ name }}{{ forloop.counter0}}1" class="resourcelink"><i class="fa fa-github" id="{{ name }}{{ forloop.counter0}}1"></i></a>
         {% endif %}
         {% if item.my_github_link %}
-            {% if item.my_github_link.1 %}
-            <a href="{{ item.my_github_link.0 }}" target="_blank" title="Проект на моём GitHub"><i class="fa fa-github-alt"></i></a>
-            {% else %}
-            <i class="fa fa-github-alt" style="color:red"></i>
-            {% endif %}
+            <a href="{{ item.my_github_link }}" target="_blank" title="Проект на моём GitHub" rel="{{ name }}{{ forloop.counter0}}2" class="resourcelink"><i class="fa fa-github-alt" id="{{ name }}{{ forloop.counter0}}2"></i></a>
         {% endif %}
 
 
     </div>
     {% endfor %}
+    {% endwith %}
 </section>
 {% endfor %}
+{% endblock %}
+
+{% block javascript %}
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <script>
+      $(document).ready(function () {
+          $('.resourcelink').each(function() {
+              var target = '#' + $(this).attr('rel');
+              var item = $(this);
+              $.ajax({
+                  data: {"link": $(this).attr('href')},
+                  url: "{% url 'videos:check_resource' %}",
+                  success: function (response) {
+                      if (response.availability == true) {
+                          $(target).css('color', 'green');
+                      } else {
+                          $(target).css('color', 'red');
+                          $(item).removeAttr('href').css("cursor","not-allowed");
+                          // $(item).remove();
+                      }
+                  }
+              });
+          });
+      });
+  </script>
 {% endblock %}
